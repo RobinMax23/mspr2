@@ -1,0 +1,62 @@
+version: 2.1
+jobs:
+  build:
+    docker:
+      - image: python:3.11.4
+    steps:
+      - checkout
+      - run:
+          name: Install Dependencies
+          command: pip install -r requirements.txt
+      - run:
+          name: Run Pylint
+          command: pylint **/*.py
+
+  test_CRM:
+    docker:
+      - image: python:3.11.4
+    steps:
+      - checkout
+      - run:
+          name: Run CRM Test
+          command: python src/CRM/test/test_api_crm.py
+
+  test_ERP:
+    docker:
+      - image: python:3.11.4
+    steps:
+      - checkout
+      - run:
+          name: Run ERP Test
+          command: python src/ERP/test/test_api_erp.py
+
+  deploy:
+    docker:
+      - image: python:3.11.4
+    steps:
+      - checkout
+      - run:
+          name: Deploy to Server
+          command: |
+            ssh user@your_server_ip "mkdir -p src"
+            scp -r ./* user@your_server_ip:/src
+
+workflows:
+  version: 2.1
+  MSPR_4_API:
+    jobs:
+      - build
+      - test_CRM:
+          requires:
+            - build 
+      - test_ERP:
+          requires:
+            - build
+      - deploy:
+          requires:
+            - build
+            - test_ERP
+            - test_CRM
+          filters:
+            branches:
+              only: main 
