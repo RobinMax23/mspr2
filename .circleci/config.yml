@@ -12,7 +12,9 @@ jobs:
             apt-get install -y maven
       - run:
           name: Compile Java Code
-          command: javac -d target src/**/*.java
+          command: |
+            find src -type f -name "*.java" > sources.txt
+            javac -d target @sources.txt
 
   test_ERP:
     docker:
