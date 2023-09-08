@@ -13,8 +13,7 @@ jobs:
       - run:
           name: Compile Java Code
           command: |
-            find sashalarrieu/mspr2/ -name "*.java" > sources.txt
-            mkdir -p target
+            find . -type f -name "*.java" > sources.txt
             javac -d target @sources.txt
 
   test_ERP:
