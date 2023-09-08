@@ -11,6 +11,10 @@ jobs:
             apt-get update
             apt-get install -y maven
       - run:
+          name: Install Spring Boot
+          command: |
+            mvn org.springframework.boot:spring-boot-maven-plugin:2.5.4:run
+      - run:
           name: Compile Java Code
           command: |
             find . -name "*.java" > sources.txt
