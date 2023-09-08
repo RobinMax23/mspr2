@@ -13,7 +13,8 @@ jobs:
       - run:
           name: Compile Java Code
           command: |
-            find src -type f -name "*.java" > sources.txt
+            find WebShop/src -type f -name "*.java" > sources.txt
+            find Revendeurs/src -type f -name "*.java" > sources.txt
             javac -d target @sources.txt
 
   test_ERP:
