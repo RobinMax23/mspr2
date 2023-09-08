@@ -13,31 +13,28 @@ jobs:
       - run:
           name: Compile Java Code
           command: javac -d target src/**/*.java
-      - run:
-          name: Run Pylint
-          command: pylint **/*.py
-
-  test_CRM:
-    docker:
-      - image: python:3.11.4
-    steps:
-      - checkout
-      - run:
-          name: Run CRM Test
-          command: python src/CRM/test/test_api_crm.py
 
   test_ERP:
     docker:
-      - image: python:3.11.4
+      - image: openjdk:11
     steps:
       - checkout
       - run:
-          name: Run ERP Test
-          command: python src/ERP/test/test_api_erp.py
+          name: Run Java Tests ERP
+          command: java -cp target org.junit.runner.JUnitCore Revendeurs/src/test/java/com/example/Revendeurs/RevendeursApplicationTests.java
+
+  test_CRM:
+    docker:
+      - image: openjdk:11
+    steps:
+      - checkout
+      - run:
+          name: Run Java Tests CRM
+          command: java -cp target org.junit.runner.JUnitCore WebShop/src/test/java/com/example/WebShop/WebShopApplicationTests.java
 
   deploy:
     docker:
-      - image: python:3.11.4
+      - image: openjdk:11
     steps:
       - checkout
       - run:
@@ -48,13 +45,13 @@ jobs:
 
 workflows:
   version: 2.1
-  MSPR_4_API:
+  mspr2ERP:
     jobs:
       - build
-      - test_CRM:
+      - test_ERP:
           requires:
             - build 
-      - test_ERP:
+      - test_CRM:
           requires:
             - build
       - deploy:
